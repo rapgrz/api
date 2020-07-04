@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Advertisement;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('advertisements/list', function () {
+    return Advertisement::all();
+});
+
+Route::get('advertisement/{id}', function ($id) {
+    $ad = Advertisement::find($id);
+
+    if(!$ad){
+      return response(['error' => 'No advertisement found'], 404);
+    }
+
+    $ad->views = $ad->views + 1;
+    $ad->save();
+    
+    return $ad;
 });
